@@ -1,0 +1,47 @@
+Front End Assignment
+The purpose of this assignment is to create an app for Arabam's users and show them a list of adverts and show more details for each advert.
+
+We are expecting you to implement a listing page and a detail page for the cars' adverts. On the listing page, you need to use the "listing" endpoint and show the advert list to the user. And, also you need to show a single-vehicle detail with the "detail" endpoint. You can find more information about endpoints in the Sandbox API section.
+
+Listing Page
+We expect to see the list of vehicles on the page.
+Vehicle image that returns from the listing response must also be shown in the list.
+The user should be directed to the detail page when selecting one of the results listed in the vehicle list.
+The user can change the number of adverts on the page (20 or 50 adverts)
+Listing Page Bonus
+You can apply filters for the list page. For example, minDate , maxDate, or categoryId etc. You can find it in our API docs. For the design concern, you can use a modal presentation view for the filter page.
+You can apply sort with price, date, or year. We are supporting 3 different sort types.
+Detail Page
+We expect to see the selected vehicle on the page.
+Vehicle image that returns from the detail response must also be shown on top of the page.
+There is no obligation about detail page design and which information to be shown. You can configure this screen as you like.
+Detail Page Bonus
+Vehicle photos could be show in slider.
+When a photo is clicked, it could be shown on a full screen.
+arabam.com SandBox API
+You can see API details with different methods. We are providing 3 different solutions. You can use postman web or postman collection. Also, you can use our swagger page for the sandbox API.
+
+Web Postman -> https://www.postman.com/yusufcakmak/workspace/arabam-assigment/overview
+Postman Collection -> https://www.getpostman.com/collections/d0c83044d06639384b1b
+Swagger -> http://sandbox.arabamd.com/swagger/index.html
+Listing Endpoint
+This request will return list of adverts. With take parameter you can decide how many adverts you will get.
+
+curl -X GET "http://sandbox.arabamd.com/api/v1/listing?sort=1&sortDirection=0&take=10" -H "accept: text/plain"
+
+Detail Endpoint
+This request will return singe advert detail. With id parameter you can get the advert detail response.
+
+curl -X GET "http://sandbox.arabamd.com/api/v1/detail?id=15207658" -H "accept: text/plain"
+
+Tips
+For the adverts count feature, you can use the take parameter shown in the API docs. (e.g take=50 or take=20)
+For vehicle image urls, you need to replace {0} with predefined resolutions. If you replace {0} with 800x600 you will get vehicle's image with 800x600 resolution. Inspect API docs carefully for the predefined resolution values.
+For the design concern, you can browse through our website or similar websites and be inspired by it. Be creative 🤸‍♂️
+Requirements
+You should use Vue
+SPA is plus
+You can use Vuex
+You can use any CSS framework (Bootstrap, Bulma, etc.); however, we also expect to see some custom CSS written by you in the project.
+You may use AI tools to assist you during development; however, please do not rely on AI to generate code that you do not fully understand or cannot write yourself.
+It should be responsive
