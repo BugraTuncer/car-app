@@ -17,6 +17,7 @@ const emit = defineEmits<{
   (e: "update:pageSize", size: number): void;
   (e: "update:viewMode", mode: "card" | "list"): void;
   (e: "openFilter"): void;
+  (e: "resetFilter"): void;
 }>();
 
 const sortValue = computed(() => {
@@ -107,6 +108,12 @@ function onPageSizeChange(size: number) {
         @click="$emit('openFilter')"
       >
         Filtrele
+      </button>
+      <button
+        class="toolbar__btn toolbar__btn--reset-filter"
+        @click="$emit('resetFilter')"
+      >
+        Filtreleri Temizle
       </button>
     </div>
   </div>

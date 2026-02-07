@@ -196,6 +196,11 @@ body {
   padding: 0.4rem 0.6rem;
 }
 
+.toolbar__btn--reset-filter {
+  background: gray;
+  color: #fff;
+}
+
 .toolbar__btn--filter {
   margin-left: auto;
   background: #e40030;

@@ -1,49 +1,117 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
-import type { CarListing, FilterParams } from '../types'
-import { SortField, SortDirection } from '../types'
-import ListingCard from '../components/ListingCard.vue'
-import ListingTable from '../components/ListingTable.vue'
-import ListingToolbar from '../components/ListingToolbar.vue'
-import ListingPagination from '../components/ListingPagination.vue'
-import ListingFilterModal from '../components/ListingFilterModal.vue'
+import { computed, ref, watch } from "vue";
+import { useStore } from "vuex";
+import type { CarListing, FilterParams, ListingParams } from "../types";
+import { SortField, SortDirection } from "../types";
+import ListingCard from "../components/ListingCard.vue";
+import ListingTable from "../components/ListingTable.vue";
+import ListingToolbar from "../components/ListingToolbar.vue";
+import ListingPagination from "../components/ListingPagination.vue";
+import ListingFilterModal from "../components/ListingFilterModal.vue";
+import { useRoute, useRouter } from "vue-router";
 
-const store = useStore()
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-const items = computed<CarListing[]>(() => store.state.listing.items)
-const loading = computed<boolean>(() => store.state.listing.loading)
-const error = computed<string | null>(() => store.state.listing.error)
-const sort = computed<SortField | null>(() => store.state.listing.sort)
-const sortDirection = computed<SortDirection | null>(() => store.state.listing.sortDirection)
-const currentPage = computed<number>(() => store.state.listing.currentPage)
-const pageSize = computed<number>(() => store.state.listing.pageSize)
-const hasMore = computed<boolean>(() => store.state.listing.hasMore)
-const filters = computed<FilterParams>(() => store.state.listing.filters)
+const items = computed<CarListing[]>(() => store.state.listing.items);
+const loading = computed<boolean>(() => store.state.listing.loading);
+const error = computed<string | null>(() => store.state.listing.error);
+const hasMore = computed<boolean>(() => store.state.listing.hasMore);
 
-const showFilterModal = ref(false)
-const viewMode = ref<'card' | 'list'>('card')
+const pageSize = computed(() => Number(route.query.take) || 20);
+const currentPage = computed(() => {
+  const skip = Number(route.query.skip) || 0;
+  return Math.floor(skip / pageSize.value) + 1;
+});
+const sort = computed<SortField | null>(() =>
+  route.query.sort !== undefined ? Number(route.query.sort) : null,
+);
+const sortDirection = computed<SortDirection | null>(() =>
+  route.query.sortDirection !== undefined
+    ? Number(route.query.sortDirection)
+    : null,
+);
+const filters = computed<FilterParams>(() => ({
+  minDate: (route.query.minDate as string) || undefined,
+  maxDate: (route.query.maxDate as string) || undefined,
+  minYear: route.query.minYear ? Number(route.query.minYear) : undefined,
+  maxYear: route.query.maxYear ? Number(route.query.maxYear) : undefined,
+}));
 
-onMounted(() => {
-  store.dispatch('listing/fetchListings')
-})
+const showFilterModal = ref(false);
+const viewMode = ref<"card" | "list">("card");
 
-function onSortingChange(payload: { sort: SortField; sortDirection: SortDirection }) {
-  store.dispatch('listing/changeSorting', payload)
+function updateURL(newParams: Record<string, any>) {
+  router.push({
+    query: {
+      ...route.query,
+      ...newParams,
+    },
+  });
+}
+
+function onSortingChange(payload: {
+  sort: SortField;
+  sortDirection: SortDirection;
+}) {
+  updateURL({
+    sort: payload.sort,
+    sortDirection: payload.sortDirection,
+    skip: 0,
+  });
+}
+
+function onResetFilter() {
+  updateURL({
+    minDate: undefined,
+    maxDate: undefined,
+    minYear: undefined,
+    maxYear: undefined,
+    skip: undefined,
+    take: undefined,
+    sort: undefined,
+    sortDirection: undefined,
+  });
 }
 
 function onPageSizeChange(size: number) {
-  store.dispatch('listing/changePageSize', size)
+  updateURL({ take: size, skip: 0 });
 }
 
 function onPageChange(page: number) {
-  store.dispatch('listing/changePage', page)
+  const skip = (page - 1) * pageSize.value;
+  updateURL({ skip });
 }
 
 function onApplyFilters(newFilters: FilterParams) {
-  store.dispatch('listing/applyFilters', newFilters)
-  showFilterModal.value = false
+  updateURL({
+    ...newFilters,
+    skip: 0,
+  });
+  showFilterModal.value = false;
 }
+
+watch(
+  () => route.query,
+  (query) => {
+    const params: ListingParams = {
+      take: Number(query.take) || 20,
+      skip: Number(query.skip) || 0,
+    };
+
+    if (query.sort !== undefined) params.sort = Number(query.sort);
+    if (query.sortDirection !== undefined)
+      params.sortDirection = Number(query.sortDirection);
+    if (query.minDate) params.minDate = query.minDate as string;
+    if (query.maxDate) params.maxDate = query.maxDate as string;
+    if (query.minYear) params.minYear = Number(query.minYear);
+    if (query.maxYear) params.maxYear = Number(query.maxYear);
+
+    store.dispatch("listing/fetchListings", params);
+  },
+  { immediate: true, deep: true },
+);
 </script>
 
 <template>
@@ -59,6 +127,7 @@ function onApplyFilters(newFilters: FilterParams) {
       @update:pageSize="onPageSizeChange"
       @update:viewMode="viewMode = $event"
       @openFilter="showFilterModal = true"
+      @resetFilter="onResetFilter"
     />
 
     <div v-if="loading" class="listing-status">Yükleniyor...</div>
