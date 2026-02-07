@@ -33,10 +33,10 @@ export interface ListingParams {
   maxDate?: string
   minYear?: number
   maxYear?: number
-  sort: SortField
-  sortDirection: SortDirection
-  skip: number
-  take: number
+  sort?: SortField
+  sortDirection?: SortDirection
+  skip?: number
+  take?: number
 }
 
 export enum SortField {
@@ -48,4 +48,11 @@ export enum SortField {
 export enum SortDirection {
   Ascending = 0,
   Descending = 1
+}
+
+export interface FilterParams {
+  minDate?: string
+  maxDate?: string
+  minYear?: number
+  maxYear?: number
 }
