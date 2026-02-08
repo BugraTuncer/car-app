@@ -40,7 +40,7 @@ const filters = computed<FilterParams>(() => ({
 }));
 
 const showFilterModal = ref(false);
-const viewMode = ref<"card" | "list">("card");
+const viewMode = ref<"card" | "list">("list");
 
 function updateURL(newParams: Record<string, any>) {
   router.push({
