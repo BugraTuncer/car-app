@@ -9,6 +9,11 @@ const router = createRouter({
       component: () => import('@/features/listing/views/ListingView.vue')
     },
     {
+      path: '/detail/:id',
+      name: 'detail',
+      component: () => import('@/features/detail/views/DetailView.vue')
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/'
     }

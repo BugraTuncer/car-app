@@ -1,18 +1,26 @@
 <script setup lang="ts">
-import type { CarListing } from '../types'
-import { resolvePhotoUrl } from '../services/car.service'
+import { useRouter } from "vue-router";
+import type { CarListing } from "../types";
+import { resolvePhotoUrl } from "../services/car.service";
+
+const router = useRouter();
 
 defineProps<{
-  items: CarListing[]
-}>()
+  items: CarListing[];
+}>();
 
 function getProperty(car: CarListing, name: string): string {
-  return car.properties.find(p => p.name === name)?.value ?? '-'
+  return car.properties.find((p) => p.name === name)?.value ?? "-";
 }
 
 function onImageError(event: Event) {
-  const target = event.target as HTMLImageElement
-  target.src = 'https://arbimg1.mncdn.com/ilanfotograflari/noImage/01/01/1/noimage5_240x180.jpg'
+  const target = event.target as HTMLImageElement;
+  target.src =
+    "https://arbimg1.mncdn.com/ilanfotograflari/noImage/01/01/1/noimage5_240x180.jpg";
+}
+
+function goToDetail(id: number) {
+  router.push({ name: "detail", params: { id } });
 }
 </script>
 
@@ -33,7 +41,12 @@ function onImageError(event: Event) {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="car in items" :key="car.id" class="listing-table__row">
+        <tr
+          v-for="car in items"
+          :key="car.id"
+          class="listing-table__row listing-table__row--clickable"
+          @click="goToDetail(car.id)"
+        >
           <td class="listing-table__td listing-table__td--image">
             <img
               :src="resolvePhotoUrl(car.photo, '240x180')"
@@ -45,9 +58,9 @@ function onImageError(event: Event) {
           </td>
           <td class="listing-table__td">{{ car.modelName }}</td>
           <td class="listing-table__td listing-table__td--title">{{ car.title }}</td>
-          <td class="listing-table__td">{{ getProperty(car, 'year') }}</td>
-          <td class="listing-table__td">{{ getProperty(car, 'km') }}</td>
-          <td class="listing-table__td">{{ getProperty(car, 'color') }}</td>
+          <td class="listing-table__td">{{ getProperty(car, "year") }}</td>
+          <td class="listing-table__td">{{ getProperty(car, "km") }}</td>
+          <td class="listing-table__td">{{ getProperty(car, "color") }}</td>
           <td class="listing-table__td listing-table__td--price">{{ car.priceFormatted }}</td>
           <td class="listing-table__td">{{ car.dateFormatted }}</td>
           <td class="listing-table__td">{{ car.location.cityName }}<br />{{ car.location.townName }}</td>

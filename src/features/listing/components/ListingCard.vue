@@ -23,13 +23,16 @@ function onImageError(event: Event) {
 </script>
 
 <template>
-  <div class="listing-card">
+  <router-link
+    :to="{ name: 'detail', params: { id: car.id } }"
+    class="listing-card"
+  >
     <img
       :src="photoSrc"
       :alt="car.title"
       class="listing-card__image"
       loading="lazy"
-      v-on:error="onImageError"
+      @error="onImageError"
     />
     <div class="listing-card__body">
       <h3 class="listing-card__title">{{ car.title }}</h3>
@@ -42,5 +45,5 @@ function onImageError(event: Event) {
         {{ car.location.cityName }}, {{ car.location.townName }}
       </div>
     </div>
-  </div>
+  </router-link>
 </template>

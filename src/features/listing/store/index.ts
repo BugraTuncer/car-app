@@ -7,6 +7,8 @@ export interface ListingState {
   loading: boolean;
   error: string | null;
   hasMore: boolean;
+  carsLastFetched: number | null;
+  lastParams: ListingParams | null;
 }
 
 const listingModule: Module<ListingState, unknown> = {
@@ -17,6 +19,8 @@ const listingModule: Module<ListingState, unknown> = {
     loading: false,
     error: null,
     hasMore: true,
+    carsLastFetched: null,
+    lastParams: null,
   }),
 
   mutations: {
@@ -32,10 +36,31 @@ const listingModule: Module<ListingState, unknown> = {
     SET_HAS_MORE(state, hasMore: boolean) {
       state.hasMore = hasMore;
     },
+    SET_CARS_LAST_FETCHED(state, carsLastFetched: number) {
+      state.carsLastFetched = carsLastFetched;
+    },
+    SET_LAST_PARAMS(state, params: ListingParams) {
+      state.lastParams = JSON.parse(JSON.stringify(params));
+    },
   },
 
   actions: {
-    async fetchListings({ commit }, params: ListingParams = {}) {
+    async fetchListings({ commit, state }, params: ListingParams = {}) {
+      const now = Date.now();
+      const paramsChanged =
+        JSON.stringify(state.lastParams) !== JSON.stringify(params);
+
+      console.log("paramsChanged", paramsChanged);
+      console.log("params", state.lastParams, params);
+
+      if (
+        !paramsChanged &&
+        state.carsLastFetched &&
+        now - state.carsLastFetched < 1000 * 60 * 5
+      ) {
+        return;
+      }
+
       commit("SET_LOADING", true);
       commit("SET_ERROR", null);
 
@@ -43,6 +68,8 @@ const listingModule: Module<ListingState, unknown> = {
         const items = await fetchListings(params);
         commit("SET_ITEMS", items);
         commit("SET_HAS_MORE", items.length === (params.take || 20));
+        commit("SET_CARS_LAST_FETCHED", Date.now());
+        commit("SET_LAST_PARAMS", params);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Bir hata oluştu";
         commit("SET_ERROR", message);

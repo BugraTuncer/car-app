@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { CarListing, ListingParams } from '../types'
+import type { CarListing, CarDetail, ListingParams } from '../types'
 
 const httpClient = axios.create({
   baseURL: '/api/v1'
@@ -7,6 +7,11 @@ const httpClient = axios.create({
 
 export async function fetchListings(params: ListingParams): Promise<CarListing[]> {
   const { data } = await httpClient.get<CarListing[]>('/listing', { params })
+  return data
+}
+
+export async function fetchDetail(id: number): Promise<CarDetail> {
+  const { data } = await httpClient.get<CarDetail>('/detail', { params: { id } })
   return data
 }
 

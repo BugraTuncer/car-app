@@ -50,6 +50,29 @@ export enum SortDirection {
   Descending = 1,
 }
 
+export interface UserInfo {
+  id: number;
+  nameSurname: string;
+  phone: string;
+  phoneFormatted: string;
+}
+
+export interface CarDetail {
+  id: number;
+  title: string;
+  location: Location;
+  category: Category;
+  modelName: string;
+  price: number;
+  priceFormatted: string;
+  date: string;
+  dateFormatted: string;
+  photos: string[];
+  properties: Property[];
+  text: string;
+  userInfo: UserInfo;
+}
+
 export interface FilterParams {
   minDate?: string;
   maxDate?: string;
