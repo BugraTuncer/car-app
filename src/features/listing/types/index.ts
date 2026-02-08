@@ -43,6 +43,7 @@ export enum SortField {
   Price = 0,
   Date = 1,
   Year = 2,
+  KM = 3,
 }
 
 export enum SortDirection {

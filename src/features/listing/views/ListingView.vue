@@ -144,7 +144,13 @@ watch(
       <div v-if="viewMode === 'card'" class="listing-grid">
         <ListingCard v-for="car in items" :key="car.id" :car="car" />
       </div>
-      <ListingTable v-else :items="items" />
+      <ListingTable
+        v-else
+        :items="items"
+        :sort="sort"
+        :sort-direction="sortDirection"
+        @update:sorting="onSortingChange"
+      />
     </template>
 
     <ListingPagination
