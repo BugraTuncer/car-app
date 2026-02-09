@@ -79,9 +79,9 @@ describe('Listing Store', () => {
     await store.dispatch('listing/fetchListings', { take: 20 })
     await store.dispatch('listing/fetchMoreListings', { take: 20, skip: 20 })
 
-    expect(store.state.listing.items).toHaveLength(2)
-    expect(store.state.listing.items[0].title).toBe('Test Araç')
-    expect(store.state.listing.items[1].title).toBe('İkinci Araç')
+    expect(store?.state?.listing?.items?.length).toBe(2)
+    expect(store?.state?.listing?.items?.[0]?.title).toBe('Test Araç')
+    expect(store?.state?.listing?.items?.[1]?.title).toBe('İkinci Araç')
   })
 
   it('cache süresi içinde tekrar fetch yapmamalı', async () => {
