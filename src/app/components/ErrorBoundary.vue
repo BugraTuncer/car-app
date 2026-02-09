@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { ref, onErrorCaptured } from "vue";
+import { ref, onErrorCaptured } from 'vue'
 
-const hasError = ref(false);
-const errorMessage = ref("");
-const errorStack = ref("");
+const hasError = ref(false)
+const errorMessage = ref('')
+const errorStack = ref('')
 
 const handleRetry = () => {
-  hasError.value = false;
-  errorMessage.value = "";
-  errorStack.value = "";
-};
+  hasError.value = false
+  errorMessage.value = ''
+  errorStack.value = ''
+}
 
 onErrorCaptured((error: Error, instance, info) => {
-  hasError.value = true;
-  errorMessage.value = error.message || "Bilinmeyen bir hata oluştu";
-  errorStack.value = error.stack || "";
+  hasError.value = true
+  errorMessage.value = error.message || 'Bilinmeyen bir hata oluştu'
+  errorStack.value = error.stack || ''
 
-  console.error("Error yakalandı:", {
+  console.error('Error yakalandı:', {
     error,
     component: instance,
-    info,
-  });
+    info
+  })
 
-  return false;
-});
+  return false
+})
 </script>
 
 <template>
@@ -37,10 +37,7 @@ onErrorCaptured((error: Error, instance, info) => {
         <pre class="error-boundary__stack">{{ errorStack }}</pre>
       </details>
       <div class="error-boundary__actions">
-        <button
-          class="error-boundary__button error-boundary__button--retry"
-          @click="handleRetry"
-        >
+        <button class="error-boundary__button error-boundary__button--retry" @click="handleRetry">
           Tekrar Dene
         </button>
         <button

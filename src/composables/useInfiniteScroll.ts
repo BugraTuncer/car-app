@@ -1,66 +1,66 @@
-import { ref, watch, onUnmounted, type Ref } from "vue";
+import { ref, watch, onUnmounted, type Ref } from 'vue'
 
 interface UseInfiniteScrollOptions {
-  target: Ref<HTMLElement | null>;
-  hasMore: Ref<boolean>;
-  onLoadMore: () => Promise<void>;
-  rootMargin?: string;
+  target: Ref<HTMLElement | null>
+  hasMore: Ref<boolean>
+  onLoadMore: () => Promise<void>
+  rootMargin?: string
 }
 
 export function useInfiniteScroll({
   target,
   hasMore,
   onLoadMore,
-  rootMargin = "200px",
+  rootMargin = '200px'
 }: UseInfiniteScrollOptions) {
-  const loadingMore = ref(false);
+  const loadingMore = ref(false)
 
-  let observer: IntersectionObserver | null = null;
+  let observer: IntersectionObserver | null = null
 
   function cleanup() {
     if (observer) {
-      observer.disconnect();
-      observer = null;
+      observer.disconnect()
+      observer = null
     }
   }
 
   function setup() {
-    cleanup();
-    if (!target.value) return;
+    cleanup()
+    if (!target.value) return
 
     observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting && hasMore.value && !loadingMore.value) {
-          loadMore();
+          loadMore()
         }
       },
-      { rootMargin },
-    );
-    observer.observe(target.value);
+      { rootMargin }
+    )
+    observer.observe(target.value)
   }
 
   async function loadMore() {
-    if (loadingMore.value || !hasMore.value) return;
+    if (loadingMore.value || !hasMore.value) return
 
-    loadingMore.value = true;
+    loadingMore.value = true
     try {
-      await onLoadMore();
+      await onLoadMore()
     } finally {
-      loadingMore.value = false;
+      loadingMore.value = false
     }
   }
 
   watch(target, (el) => {
     if (el) {
-      setup();
+      setup()
     } else {
-      cleanup();
+      cleanup()
     }
-  });
+  })
 
-  onUnmounted(cleanup);
+  onUnmounted(cleanup)
 
   return {
-    loadingMore,
-  };
+    loadingMore
+  }
 }

@@ -3,7 +3,7 @@ import type { CarListing, CarDetail, ListingParams } from '../types'
 
 const httpClient = axios.create({
   baseURL: '/api/v1',
-  timeout: 15000,
+  timeout: 15000
 })
 
 httpClient.interceptors.response.use(
@@ -18,7 +18,9 @@ httpClient.interceptors.response.use(
     }
 
     if (!error.response) {
-      return Promise.reject(new Error('Sunucuya bağlanılamadı. İnternet bağlantınızı kontrol edin.'))
+      return Promise.reject(
+        new Error('Sunucuya bağlanılamadı. İnternet bağlantınızı kontrol edin.')
+      )
     }
 
     const status = error.response.status
@@ -28,7 +30,7 @@ httpClient.interceptors.response.use(
       404: 'İstenen kaynak bulunamadı.',
       429: 'Çok fazla istek gönderildi. Lütfen biraz bekleyin.',
       500: 'Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.',
-      503: 'Servis geçici olarak kullanılamıyor.',
+      503: 'Servis geçici olarak kullanılamıyor.'
     }
 
     const message = statusMessages[status] || `Beklenmeyen bir hata oluştu. (${status})`
@@ -46,7 +48,7 @@ export async function fetchListings(params: ListingParams): Promise<CarListing[]
 
   const { data } = await httpClient.get<CarListing[]>('/listing', {
     params,
-    signal: listingController.signal,
+    signal: listingController.signal
   })
   listingController = null
   return data

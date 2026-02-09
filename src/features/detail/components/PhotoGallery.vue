@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { resolvePhotoUrl } from "@/features/listing/services/car.service";
-import { onImageError } from "@/utils/image";
+import { ref, computed } from 'vue'
+import { resolvePhotoUrl } from '@/features/listing/services/car.service'
+import { onImageError } from '@/utils/image'
 
 const props = defineProps<{
-  photos: string[];
-}>();
+  photos: string[]
+}>()
 
 const emit = defineEmits<{
-  (e: "openFullscreen", index: number): void;
-}>();
+  (e: 'openFullscreen', index: number): void
+}>()
 
-const activeIndex = ref(0);
+const activeIndex = ref(0)
 
 const mainSrc = computed(() => {
-  const photo = props.photos[activeIndex.value];
-  if (!photo) return "";
-  return resolvePhotoUrl(photo, "800x600");
-});
+  const photo = props.photos[activeIndex.value]
+  if (!photo) return ''
+  return resolvePhotoUrl(photo, '800x600')
+})
 
 function prev() {
-  if (activeIndex.value > 0) activeIndex.value--;
+  if (activeIndex.value > 0) activeIndex.value--
 }
 
 function next() {
-  if (activeIndex.value < props.photos.length - 1) activeIndex.value++;
+  if (activeIndex.value < props.photos.length - 1) activeIndex.value++
 }
 
 function selectPhoto(index: number) {
-  activeIndex.value = index;
+  activeIndex.value = index
 }
 </script>
 

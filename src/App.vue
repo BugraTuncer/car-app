@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AppHeader from "./app/components/AppHeader.vue";
-import ErrorBoundary from "./app/components/ErrorBoundary.vue";
+import AppHeader from './app/components/AppHeader.vue'
+import ErrorBoundary from './app/components/ErrorBoundary.vue'
 </script>
 
 <template>

@@ -167,7 +167,7 @@ body {
   -webkit-appearance: none;
   appearance: none;
   -moz-appearance: none;
-  background-image: url("https://www.svgrepo.com/show/80156/down-arrow.svg");
+  background-image: url('https://www.svgrepo.com/show/80156/down-arrow.svg');
   background-repeat: no-repeat;
   background-size: 12px 12px;
   background-position: calc(100% - 14px);
@@ -671,6 +671,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 10px;
 }
 
 .gallery__main {

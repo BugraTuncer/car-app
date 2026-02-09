@@ -1,43 +1,43 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-import type { FilterParams } from "../types";
+import { reactive } from 'vue'
+import type { FilterParams } from '../types'
 
 const props = defineProps<{
-  visible: boolean;
-  currentFilters: FilterParams;
-}>();
+  visible: boolean
+  currentFilters: FilterParams
+}>()
 
 const emit = defineEmits<{
-  (e: "apply", filters: FilterParams): void;
-  (e: "close"): void;
-}>();
+  (e: 'apply', filters: FilterParams): void
+  (e: 'close'): void
+}>()
 
 const form = reactive<FilterParams>({
-  minDate: props.currentFilters.minDate ?? "",
-  maxDate: props.currentFilters.maxDate ?? "",
+  minDate: props.currentFilters.minDate ?? '',
+  maxDate: props.currentFilters.maxDate ?? '',
   minYear: props.currentFilters.minYear,
-  maxYear: props.currentFilters.maxYear,
-});
+  maxYear: props.currentFilters.maxYear
+})
 
 function apply() {
-  const filters: FilterParams = {};
-  if (form.minDate) filters.minDate = form.minDate;
-  if (form.maxDate) filters.maxDate = form.maxDate;
-  if (form.minYear) filters.minYear = form.minYear;
-  if (form.maxYear) filters.maxYear = form.maxYear;
-  emit("apply", filters);
+  const filters: FilterParams = {}
+  if (form.minDate) filters.minDate = form.minDate
+  if (form.maxDate) filters.maxDate = form.maxDate
+  if (form.minYear) filters.minYear = form.minYear
+  if (form.maxYear) filters.maxYear = form.maxYear
+  emit('apply', filters)
 }
 
 function clear() {
-  form.minDate = "";
-  form.maxDate = "";
-  form.minYear = undefined;
-  form.maxYear = undefined;
-  emit("apply", {});
+  form.minDate = ''
+  form.maxDate = ''
+  form.minYear = undefined
+  form.maxYear = undefined
+  emit('apply', {})
 }
 
 function onBackdrop() {
-  emit("close");
+  emit('close')
 }
 </script>
 
@@ -61,29 +61,17 @@ function onBackdrop() {
           </div>
           <div class="modal__field">
             <label>Min Yıl</label>
-            <input
-              type="number"
-              v-model.number="form.minYear"
-              placeholder="ör: 2015"
-            />
+            <input type="number" v-model.number="form.minYear" placeholder="ör: 2015" />
           </div>
           <div class="modal__field">
             <label>Max Yıl</label>
-            <input
-              type="number"
-              v-model.number="form.maxYear"
-              placeholder="ör: 2024"
-            />
+            <input type="number" v-model.number="form.maxYear" placeholder="ör: 2024" />
           </div>
         </div>
 
         <div class="modal__footer">
-          <button class="modal__btn modal__btn--clear" @click="clear">
-            Temizle
-          </button>
-          <button class="modal__btn modal__btn--apply" @click="apply">
-            Uygula
-          </button>
+          <button class="modal__btn modal__btn--clear" @click="clear">Temizle</button>
+          <button class="modal__btn modal__btn--apply" @click="apply">Uygula</button>
         </div>
       </div>
     </div>

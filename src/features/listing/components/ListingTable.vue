@@ -1,43 +1,40 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { type CarListing, SortField, SortDirection } from "../types";
-import { resolvePhotoUrl } from "../services/car.service";
-import { onImageError } from "@/utils/image";
+import { useRouter } from 'vue-router'
+import { type CarListing, SortField, SortDirection } from '../types'
+import { resolvePhotoUrl } from '../services/car.service'
+import { onImageError } from '@/utils/image'
 
-const router = useRouter();
+const router = useRouter()
 
 const props = defineProps<{
-  items: CarListing[];
-  sort: SortField | null;
-  sortDirection: SortDirection | null;
-}>();
+  items: CarListing[]
+  sort: SortField | null
+  sortDirection: SortDirection | null
+}>()
 
 const emit = defineEmits<{
-  (
-    e: "update:sorting",
-    payload: { sort: SortField; sortDirection: SortDirection },
-  ): void;
-}>();
+  (e: 'update:sorting', payload: { sort: SortField; sortDirection: SortDirection }): void
+}>()
 
 function getProperty(car: CarListing, name: string): string {
-  return car.properties.find((p) => p.name === name)?.value ?? "-";
+  return car.properties.find((p) => p.name === name)?.value ?? '-'
 }
 
 function goToDetail(id: number) {
-  router.push({ name: "detail", params: { id } });
+  router.push({ name: 'detail', params: { id } })
 }
 
 function onHeaderClick(field: SortField) {
-  let direction = SortDirection.Descending;
+  let direction = SortDirection.Descending
 
   if (props.sort === field) {
     direction =
       props.sortDirection === SortDirection.Ascending
         ? SortDirection.Descending
-        : SortDirection.Ascending;
+        : SortDirection.Ascending
   }
 
-  emit("update:sorting", { sort: field, sortDirection: direction });
+  emit('update:sorting', { sort: field, sortDirection: direction })
 }
 </script>
 
@@ -60,8 +57,7 @@ function onHeaderClick(field: SortField) {
                   class="listing-table__sort-icon"
                   :class="{
                     'listing-table__sort-icon--active':
-                      sort === SortField.Year &&
-                      sortDirection === SortDirection.Ascending,
+                      sort === SortField.Year && sortDirection === SortDirection.Ascending
                   }"
                   >▲</span
                 >
@@ -69,8 +65,7 @@ function onHeaderClick(field: SortField) {
                   class="listing-table__sort-icon"
                   :class="{
                     'listing-table__sort-icon--active':
-                      sort === SortField.Year &&
-                      sortDirection === SortDirection.Descending,
+                      sort === SortField.Year && sortDirection === SortDirection.Descending
                   }"
                   >▼</span
                 >
@@ -90,8 +85,7 @@ function onHeaderClick(field: SortField) {
                   class="listing-table__sort-icon"
                   :class="{
                     'listing-table__sort-icon--active':
-                      sort === SortField.Price &&
-                      sortDirection === SortDirection.Ascending,
+                      sort === SortField.Price && sortDirection === SortDirection.Ascending
                   }"
                   >▲</span
                 >
@@ -99,8 +93,7 @@ function onHeaderClick(field: SortField) {
                   class="listing-table__sort-icon"
                   :class="{
                     'listing-table__sort-icon--active':
-                      sort === SortField.Price &&
-                      sortDirection === SortDirection.Descending,
+                      sort === SortField.Price && sortDirection === SortDirection.Descending
                   }"
                   >▼</span
                 >
@@ -118,8 +111,7 @@ function onHeaderClick(field: SortField) {
                   class="listing-table__sort-icon"
                   :class="{
                     'listing-table__sort-icon--active':
-                      sort === SortField.Date &&
-                      sortDirection === SortDirection.Ascending,
+                      sort === SortField.Date && sortDirection === SortDirection.Ascending
                   }"
                   >▲</span
                 >
@@ -127,8 +119,7 @@ function onHeaderClick(field: SortField) {
                   class="listing-table__sort-icon"
                   :class="{
                     'listing-table__sort-icon--active':
-                      sort === SortField.Date &&
-                      sortDirection === SortDirection.Descending,
+                      sort === SortField.Date && sortDirection === SortDirection.Descending
                   }"
                   >▼</span
                 >
@@ -158,9 +149,9 @@ function onHeaderClick(field: SortField) {
           <td class="listing-table__td listing-table__td--title">
             {{ car.title }}
           </td>
-          <td class="listing-table__td">{{ getProperty(car, "year") }}</td>
-          <td class="listing-table__td">{{ getProperty(car, "km") }}</td>
-          <td class="listing-table__td">{{ getProperty(car, "color") }}</td>
+          <td class="listing-table__td">{{ getProperty(car, 'year') }}</td>
+          <td class="listing-table__td">{{ getProperty(car, 'km') }}</td>
+          <td class="listing-table__td">{{ getProperty(car, 'color') }}</td>
           <td class="listing-table__td listing-table__td--price">
             {{ car.priceFormatted }}
           </td>

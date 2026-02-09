@@ -1,27 +1,20 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import type { CarListing } from "../types";
-import { resolvePhotoUrl } from "../services/car.service";
-import { onImageError } from "@/utils/image";
+import { computed } from 'vue'
+import type { CarListing } from '../types'
+import { resolvePhotoUrl } from '../services/car.service'
+import { onImageError } from '@/utils/image'
 
-const props = defineProps<{ car: CarListing }>();
+const props = defineProps<{ car: CarListing }>()
 
-const photoSrc = computed(() => resolvePhotoUrl(props.car.photo, "800x600"));
+const photoSrc = computed(() => resolvePhotoUrl(props.car.photo, '800x600'))
 
-const year = computed(
-  () => props.car.properties.find((p) => p.name === "year")?.value ?? "",
-);
+const year = computed(() => props.car.properties.find((p) => p.name === 'year')?.value ?? '')
 
-const km = computed(
-  () => props.car.properties.find((p) => p.name === "km")?.value ?? "",
-);
+const km = computed(() => props.car.properties.find((p) => p.name === 'km')?.value ?? '')
 </script>
 
 <template>
-  <router-link
-    :to="{ name: 'detail', params: { id: car.id } }"
-    class="listing-card"
-  >
+  <router-link :to="{ name: 'detail', params: { id: car.id } }" class="listing-card">
     <img
       :src="photoSrc"
       :alt="car.title"

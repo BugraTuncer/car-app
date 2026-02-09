@@ -1,43 +1,40 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { SortField, SortDirection } from "../types";
+import { computed } from 'vue'
+import { SortField, SortDirection } from '../types'
 
 const props = defineProps<{
-  sort: SortField | null;
-  sortDirection: SortDirection | null;
-  pageSize: number;
-  viewMode: "card" | "list";
-  isMobile: boolean;
-}>();
+  sort: SortField | null
+  sortDirection: SortDirection | null
+  pageSize: number
+  viewMode: 'card' | 'list'
+  isMobile: boolean
+}>()
 
 const emit = defineEmits<{
-  (
-    e: "update:sorting",
-    payload: { sort: SortField; sortDirection: SortDirection },
-  ): void;
-  (e: "update:pageSize", size: number): void;
-  (e: "update:viewMode", mode: "card" | "list"): void;
-  (e: "openFilter"): void;
-  (e: "resetFilter"): void;
-}>();
+  (e: 'update:sorting', payload: { sort: SortField; sortDirection: SortDirection }): void
+  (e: 'update:pageSize', size: number): void
+  (e: 'update:viewMode', mode: 'card' | 'list'): void
+  (e: 'openFilter'): void
+  (e: 'resetFilter'): void
+}>()
 
 const sortValue = computed(() => {
-  if (props.sort === null) return "";
-  return `${props.sort}-${props.sortDirection}`;
-});
+  if (props.sort === null) return ''
+  return `${props.sort}-${props.sortDirection}`
+})
 
 function onSortChange(event: Event) {
-  const value = (event.target as HTMLSelectElement).value;
-  if (!value) return;
-  const [field, dir] = value.split("-").map(Number);
-  emit("update:sorting", {
+  const value = (event.target as HTMLSelectElement).value
+  if (!value) return
+  const [field, dir] = value.split('-').map(Number)
+  emit('update:sorting', {
     sort: field as SortField,
-    sortDirection: dir as SortDirection,
-  });
+    sortDirection: dir as SortDirection
+  })
 }
 
 function onPageSizeChange(size: number) {
-  emit("update:pageSize", size);
+  emit('update:pageSize', size)
 }
 </script>
 
@@ -104,17 +101,11 @@ function onPageSizeChange(size: number) {
           50
         </button>
       </div>
-      <button
-        class="toolbar__btn toolbar__btn--filter"
-        @click="$emit('openFilter')"
-      >
-        {{ isMobile ? "Filtre" : "Filtrele" }}
+      <button class="toolbar__btn toolbar__btn--filter" @click="$emit('openFilter')">
+        {{ isMobile ? 'Filtre' : 'Filtrele' }}
       </button>
-      <button
-        class="toolbar__btn toolbar__btn--reset-filter"
-        @click="$emit('resetFilter')"
-      >
-        {{ isMobile ? "Temizle" : "Filtreleri Temizle" }}
+      <button class="toolbar__btn toolbar__btn--reset-filter" @click="$emit('resetFilter')">
+        {{ isMobile ? 'Temizle' : 'Filtreleri Temizle' }}
       </button>
     </div>
   </div>

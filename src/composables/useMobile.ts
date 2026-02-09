@@ -1,22 +1,22 @@
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from 'vue'
 
-const MOBILE_BREAKPOINT = 768;
+const MOBILE_BREAKPOINT = 768
 
 export function useMobile() {
-  const isMobile = ref(false);
+  const isMobile = ref(false)
 
   function checkMobile() {
-    isMobile.value = window.innerWidth <= MOBILE_BREAKPOINT;
+    isMobile.value = window.innerWidth <= MOBILE_BREAKPOINT
   }
 
   onMounted(() => {
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-  });
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
 
   onUnmounted(() => {
-    window.removeEventListener("resize", checkMobile);
-  });
+    window.removeEventListener('resize', checkMobile)
+  })
 
-  return { isMobile };
+  return { isMobile }
 }

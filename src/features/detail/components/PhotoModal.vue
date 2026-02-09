@@ -1,44 +1,44 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from "vue";
-import { resolvePhotoUrl } from "@/features/listing/services/car.service";
-import { onImageError } from "@/utils/image";
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { resolvePhotoUrl } from '@/features/listing/services/car.service'
+import { onImageError } from '@/utils/image'
 
 const props = defineProps<{
-  photos: string[];
-  visible: boolean;
-  startIndex: number;
-}>();
+  photos: string[]
+  visible: boolean
+  startIndex: number
+}>()
 
 const emit = defineEmits<{
-  (e: "close"): void;
-}>();
+  (e: 'close'): void
+}>()
 
-const currentIndex = ref(props.startIndex);
+const currentIndex = ref(props.startIndex)
 
 watch(
   () => props.startIndex,
   (val) => {
-    currentIndex.value = val;
-  },
-);
+    currentIndex.value = val
+  }
+)
 
 function prev() {
-  if (currentIndex.value > 0) currentIndex.value--;
+  if (currentIndex.value > 0) currentIndex.value--
 }
 
 function next() {
-  if (currentIndex.value < props.photos.length - 1) currentIndex.value++;
+  if (currentIndex.value < props.photos.length - 1) currentIndex.value++
 }
 
 function onKeydown(e: KeyboardEvent) {
-  if (!props.visible) return;
-  if (e.key === "Escape") emit("close");
-  if (e.key === "ArrowLeft") prev();
-  if (e.key === "ArrowRight") next();
+  if (!props.visible) return
+  if (e.key === 'Escape') emit('close')
+  if (e.key === 'ArrowLeft') prev()
+  if (e.key === 'ArrowRight') next()
 }
 
-onMounted(() => window.addEventListener("keydown", onKeydown));
-onUnmounted(() => window.removeEventListener("keydown", onKeydown));
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
@@ -70,9 +70,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
         ›
       </button>
 
-      <div class="photo-modal__counter">
-        {{ currentIndex + 1 }} / {{ photos.length }}
-      </div>
+      <div class="photo-modal__counter">{{ currentIndex + 1 }} / {{ photos.length }}</div>
     </div>
   </Teleport>
 </template>

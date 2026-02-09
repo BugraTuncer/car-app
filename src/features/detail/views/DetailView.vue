@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useStore } from "vuex";
-import { useRoute, useRouter } from "vue-router";
-import type { CarDetail } from "@/features/listing/types";
-import DOMPurify from "dompurify";
-import PhotoGallery from "../components/PhotoGallery.vue";
-import PhotoModal from "../components/PhotoModal.vue";
+import { computed, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useRoute, useRouter } from 'vue-router'
+import type { CarDetail } from '@/features/listing/types'
+import DOMPurify from 'dompurify'
+import PhotoGallery from '../components/PhotoGallery.vue'
+import PhotoModal from '../components/PhotoModal.vue'
 
-const store = useStore();
+const store = useStore()
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const detail = computed<CarDetail | null>(() => store.state.detail.detail);
-const loading = computed<boolean>(() => store.state.detail.loading);
-const error = computed<string | null>(() => store.state.detail.error);
+const detail = computed<CarDetail | null>(() => store.state.detail.detail)
+const loading = computed<boolean>(() => store.state.detail.loading)
+const error = computed<string | null>(() => store.state.detail.error)
 
 const sanitizedText = computed(() => {
-  return detail.value?.text ? DOMPurify.sanitize(detail.value.text) : "";
-});
+  return detail.value?.text ? DOMPurify.sanitize(detail.value.text) : ''
+})
 
-const showModal = ref(false);
-const modalStartIndex = ref(0);
+const showModal = ref(false)
+const modalStartIndex = ref(0)
 
 function openFullscreen(index: number) {
-  modalStartIndex.value = index;
-  showModal.value = true;
+  modalStartIndex.value = index
+  showModal.value = true
 }
 
 function getProperty(name: string): string {
-  return detail.value?.properties.find((p) => p.name === name)?.value ?? "-";
+  return detail.value?.properties.find((p) => p.name === name)?.value ?? '-'
 }
 
 function goBack() {
-  router.back();
+  router.back()
 }
 
 watch(
   () => route.params.id,
   (id) => {
     if (id) {
-      store.dispatch("detail/fetchDetail", Number(id));
+      store.dispatch('detail/fetchDetail', Number(id))
     }
   },
-  { immediate: true },
-);
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -60,10 +60,7 @@ watch(
     <template v-else-if="detail">
       <div class="detail__hero">
         <div class="detail__photo">
-          <PhotoGallery
-            :photos="detail.photos"
-            @openFullscreen="openFullscreen"
-          />
+          <PhotoGallery :photos="detail.photos" @openFullscreen="openFullscreen" />
         </div>
 
         <div class="detail__sidebar">
@@ -75,23 +72,23 @@ watch(
             <tbody>
               <tr>
                 <td>Yıl</td>
-                <td>{{ getProperty("year") }}</td>
+                <td>{{ getProperty('year') }}</td>
               </tr>
               <tr>
                 <td>Kilometre</td>
-                <td>{{ getProperty("km") }}</td>
+                <td>{{ getProperty('km') }}</td>
               </tr>
               <tr>
                 <td>Renk</td>
-                <td>{{ getProperty("color") }}</td>
+                <td>{{ getProperty('color') }}</td>
               </tr>
               <tr>
                 <td>Vites</td>
-                <td>{{ getProperty("gear") }}</td>
+                <td>{{ getProperty('gear') }}</td>
               </tr>
               <tr>
                 <td>Yakıt</td>
-                <td>{{ getProperty("fuel") }}</td>
+                <td>{{ getProperty('fuel') }}</td>
               </tr>
               <tr>
                 <td>Kategori</td>
