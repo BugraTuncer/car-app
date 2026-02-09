@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import { type CarListing, SortField, SortDirection } from "../types";
 import { resolvePhotoUrl } from "../services/car.service";
+import { onImageError } from "@/utils/image";
 
 const router = useRouter();
 
@@ -20,12 +21,6 @@ const emit = defineEmits<{
 
 function getProperty(car: CarListing, name: string): string {
   return car.properties.find((p) => p.name === name)?.value ?? "-";
-}
-
-function onImageError(event: Event) {
-  const target = event.target as HTMLImageElement;
-  target.src =
-    "https://arbimg1.mncdn.com/ilanfotograflari/noImage/01/01/1/noimage5_240x180.jpg";
 }
 
 function goToDetail(id: number) {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { resolvePhotoUrl } from "@/features/listing/services/car.service";
+import { onImageError } from "@/utils/image";
 
 const props = defineProps<{
   photos: string[];
@@ -28,12 +29,6 @@ function next() {
 
 function selectPhoto(index: number) {
   activeIndex.value = index;
-}
-
-function onImageError(event: Event) {
-  const target = event.target as HTMLImageElement;
-  target.src =
-    "https://arbimg1.mncdn.com/ilanfotograflari/noImage/01/01/1/noimage5_240x180.jpg";
 }
 </script>
 

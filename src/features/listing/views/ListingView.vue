@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, onUnmounted } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import type { CarListing, FilterParams, ListingParams } from "../types";
 import { SortField, SortDirection } from "../types";
@@ -10,6 +10,7 @@ import ListingPagination from "../components/ListingPagination.vue";
 import ListingFilterModal from "../components/ListingFilterModal.vue";
 import { useRoute, useRouter } from "vue-router";
 import { useMobile } from "@/composables/useMobile";
+import { useInfiniteScroll } from "@/composables/useInfiniteScroll";
 
 const { isMobile } = useMobile();
 
@@ -44,15 +45,24 @@ const filters = computed<FilterParams>(() => ({
 
 const showFilterModal = ref(false);
 const viewMode = ref<"card" | "list">("list");
-
-const scrollSentinel = ref<HTMLElement | null>(null);
-const loadingMore = ref(false);
 const infiniteScrollSkip = ref(0);
-let observer: IntersectionObserver | null = null;
+const scrollSentinel = ref<HTMLElement | null>(null);
 
 const effectiveViewMode = computed(() => {
   if (isMobile.value) return "card";
   return viewMode.value;
+});
+
+const { loadingMore } = useInfiniteScroll({
+  target: scrollSentinel,
+  hasMore,
+  async onLoadMore() {
+    infiniteScrollSkip.value += pageSize.value;
+    await store.dispatch(
+      "listing/fetchMoreListings",
+      buildListingParams({ skip: infiniteScrollSkip.value }),
+    );
+  },
 });
 
 function buildListingParams(
@@ -125,58 +135,11 @@ function onApplyFilters(newFilters: FilterParams) {
   showFilterModal.value = false;
 }
 
-async function loadMore() {
-  if (loadingMore.value || !hasMore.value) return;
-
-  loadingMore.value = true;
-  infiniteScrollSkip.value += pageSize.value;
-
-  await store.dispatch(
-    "listing/fetchMoreListings",
-    buildListingParams({ skip: infiniteScrollSkip.value }),
-  );
-  loadingMore.value = false;
-}
-
-function setupObserver() {
-  cleanupObserver();
-  if (!scrollSentinel.value) return;
-
-  observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0]?.isIntersecting) {
-        loadMore();
-      }
-    },
-    { rootMargin: "200px" },
-  );
-  observer.observe(scrollSentinel.value);
-}
-
-function cleanupObserver() {
-  if (observer) {
-    observer.disconnect();
-    observer = null;
-  }
-}
-
-watch(scrollSentinel, (el) => {
-  if (el) {
-    setupObserver();
-  } else {
-    cleanupObserver();
-  }
-});
-
 watch(isMobile, (mobile, wasMobile) => {
   infiniteScrollSkip.value = 0;
   if (wasMobile && !mobile) {
     store.dispatch("listing/fetchListings", buildListingParams());
   }
-});
-
-onUnmounted(() => {
-  cleanupObserver();
 });
 
 watch(

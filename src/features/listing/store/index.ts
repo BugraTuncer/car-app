@@ -1,3 +1,4 @@
+import axios from "axios";
 import type { Module } from "vuex";
 import type { CarListing, ListingParams } from "../types";
 import { fetchListings } from "../services/car.service";
@@ -56,6 +57,7 @@ const listingModule: Module<ListingState, unknown> = {
         commit("APPEND_ITEMS", items);
         commit("SET_HAS_MORE", items.length === (params.take || 20));
       } catch (err) {
+        if (axios.isCancel(err)) return;
         const message = err instanceof Error ? err.message : "Bir hata oluştu";
         commit("SET_ERROR", message);
       }
@@ -65,9 +67,6 @@ const listingModule: Module<ListingState, unknown> = {
       const now = Date.now();
       const paramsChanged =
         JSON.stringify(state.lastParams) !== JSON.stringify(params);
-
-      console.log("paramsChanged", paramsChanged);
-      console.log("params", state.lastParams, params);
 
       if (
         !paramsChanged &&
@@ -87,6 +86,7 @@ const listingModule: Module<ListingState, unknown> = {
         commit("SET_CARS_LAST_FETCHED", Date.now());
         commit("SET_LAST_PARAMS", params);
       } catch (err) {
+        if (axios.isCancel(err)) return;
         const message = err instanceof Error ? err.message : "Bir hata oluştu";
         commit("SET_ERROR", message);
       } finally {

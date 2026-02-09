@@ -3,6 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import type { CarDetail } from "@/features/listing/types";
+import DOMPurify from "dompurify";
 import PhotoGallery from "../components/PhotoGallery.vue";
 import PhotoModal from "../components/PhotoModal.vue";
 
@@ -14,6 +15,10 @@ const router = useRouter();
 const detail = computed<CarDetail | null>(() => store.state.detail.detail);
 const loading = computed<boolean>(() => store.state.detail.loading);
 const error = computed<string | null>(() => store.state.detail.error);
+
+const sanitizedText = computed(() => {
+  return detail.value?.text ? DOMPurify.sanitize(detail.value.text) : "";
+});
 
 const showModal = ref(false);
 const modalStartIndex = ref(0);
@@ -120,7 +125,7 @@ watch(
 
       <div v-if="detail.text" class="detail__description">
         <h3 class="detail__description-title">Açıklama</h3>
-        <div class="detail__description-text" v-html="detail.text"></div>
+        <div class="detail__description-text" v-html="sanitizedText"></div>
       </div>
 
       <PhotoModal

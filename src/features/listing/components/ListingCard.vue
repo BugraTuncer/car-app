@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import type { CarListing } from "../types";
 import { resolvePhotoUrl } from "../services/car.service";
+import { onImageError } from "@/utils/image";
 
 const props = defineProps<{ car: CarListing }>();
 
@@ -14,12 +15,6 @@ const year = computed(
 const km = computed(
   () => props.car.properties.find((p) => p.name === "km")?.value ?? "",
 );
-
-function onImageError(event: Event) {
-  const target = event.target as HTMLImageElement;
-  target.src =
-    "https://arbimg1.mncdn.com/ilanfotograflari/noImage/01/01/1/noimage5_240x180.jpg";
-}
 </script>
 
 <template>

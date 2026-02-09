@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import { resolvePhotoUrl } from "@/features/listing/services/car.service";
+import { onImageError } from "@/utils/image";
 
 const props = defineProps<{
   photos: string[];
@@ -38,12 +39,6 @@ function onKeydown(e: KeyboardEvent) {
 
 onMounted(() => window.addEventListener("keydown", onKeydown));
 onUnmounted(() => window.removeEventListener("keydown", onKeydown));
-
-function onImageError(event: Event) {
-  const target = event.target as HTMLImageElement;
-  target.src =
-    "https://arbimg1.mncdn.com/ilanfotograflari/noImage/01/01/1/noimage5_240x180.jpg";
-}
 </script>
 
 <template>
