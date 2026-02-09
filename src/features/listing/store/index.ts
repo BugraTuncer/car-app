@@ -42,9 +42,25 @@ const listingModule: Module<ListingState, unknown> = {
     SET_LAST_PARAMS(state, params: ListingParams) {
       state.lastParams = JSON.parse(JSON.stringify(params));
     },
+    APPEND_ITEMS(state, items: CarListing[]) {
+      state.items = [...state.items, ...items];
+    },
   },
 
   actions: {
+    async fetchMoreListings({ commit }, params: ListingParams = {}) {
+      commit("SET_ERROR", null);
+
+      try {
+        const items = await fetchListings(params);
+        commit("APPEND_ITEMS", items);
+        commit("SET_HAS_MORE", items.length === (params.take || 20));
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Bir hata oluştu";
+        commit("SET_ERROR", message);
+      }
+    },
+
     async fetchListings({ commit, state }, params: ListingParams = {}) {
       const now = Date.now();
       const paramsChanged =

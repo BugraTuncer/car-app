@@ -7,6 +7,7 @@ const props = defineProps<{
   sortDirection: SortDirection | null;
   pageSize: number;
   viewMode: "card" | "list";
+  isMobile: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -41,8 +42,8 @@ function onPageSizeChange(size: number) {
 </script>
 
 <template>
-  <div class="toolbar">
-    <div class="toolbar__group">
+  <div class="toolbar" :class="{ 'toolbar--mobile': isMobile }">
+    <div class="toolbar__group toolbar__group--sort">
       <select class="toolbar__select" :value="sortValue" @change="onSortChange">
         <option value="" disabled>Gelişmiş Sıralama</option>
         <option :value="`${SortField.Price}-${SortDirection.Ascending}`">
@@ -65,7 +66,7 @@ function onPageSizeChange(size: number) {
         </option>
       </select>
 
-      <div class="toolbar__view-toggle">
+      <div v-if="!isMobile" class="toolbar__view-toggle">
         <button
           class="toolbar__btn toolbar__btn--view"
           :class="{ 'toolbar__btn--active': viewMode === 'card' }"
@@ -86,7 +87,7 @@ function onPageSizeChange(size: number) {
     </div>
 
     <div class="toolbar__group__right">
-      <div class="toolbar__group">
+      <div v-if="!isMobile" class="toolbar__group">
         <label class="toolbar__label">Göster:</label>
         <button
           class="toolbar__btn"
@@ -107,13 +108,13 @@ function onPageSizeChange(size: number) {
         class="toolbar__btn toolbar__btn--filter"
         @click="$emit('openFilter')"
       >
-        Filtrele
+        {{ isMobile ? "Filtre" : "Filtrele" }}
       </button>
       <button
         class="toolbar__btn toolbar__btn--reset-filter"
         @click="$emit('resetFilter')"
       >
-        Filtreleri Temizle
+        {{ isMobile ? "Temizle" : "Filtreleri Temizle" }}
       </button>
     </div>
   </div>

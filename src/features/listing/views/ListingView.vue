@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, onUnmounted } from "vue";
 import { useStore } from "vuex";
 import type { CarListing, FilterParams, ListingParams } from "../types";
 import { SortField, SortDirection } from "../types";
@@ -9,6 +9,9 @@ import ListingToolbar from "../components/ListingToolbar.vue";
 import ListingPagination from "../components/ListingPagination.vue";
 import ListingFilterModal from "../components/ListingFilterModal.vue";
 import { useRoute, useRouter } from "vue-router";
+import { useMobile } from "@/composables/useMobile";
+
+const { isMobile } = useMobile();
 
 const store = useStore();
 const route = useRoute();
@@ -41,6 +44,36 @@ const filters = computed<FilterParams>(() => ({
 
 const showFilterModal = ref(false);
 const viewMode = ref<"card" | "list">("list");
+
+const scrollSentinel = ref<HTMLElement | null>(null);
+const loadingMore = ref(false);
+const infiniteScrollSkip = ref(0);
+let observer: IntersectionObserver | null = null;
+
+const effectiveViewMode = computed(() => {
+  if (isMobile.value) return "card";
+  return viewMode.value;
+});
+
+function buildListingParams(
+  overrides: Partial<ListingParams> = {},
+): ListingParams {
+  const query = route.query;
+  const params: ListingParams = {
+    take: Number(query.take) || 20,
+    skip: Number(query.skip) || 0,
+  };
+
+  if (query.sort !== undefined) params.sort = Number(query.sort);
+  if (query.sortDirection !== undefined)
+    params.sortDirection = Number(query.sortDirection);
+  if (query.minDate) params.minDate = query.minDate as string;
+  if (query.maxDate) params.maxDate = query.maxDate as string;
+  if (query.minYear) params.minYear = Number(query.minYear);
+  if (query.maxYear) params.maxYear = Number(query.maxYear);
+
+  return { ...params, ...overrides };
+}
 
 function updateURL(newParams: Record<string, any>) {
   router.push({
@@ -92,23 +125,65 @@ function onApplyFilters(newFilters: FilterParams) {
   showFilterModal.value = false;
 }
 
+async function loadMore() {
+  if (loadingMore.value || !hasMore.value) return;
+
+  loadingMore.value = true;
+  infiniteScrollSkip.value += pageSize.value;
+
+  await store.dispatch(
+    "listing/fetchMoreListings",
+    buildListingParams({ skip: infiniteScrollSkip.value }),
+  );
+  loadingMore.value = false;
+}
+
+function setupObserver() {
+  cleanupObserver();
+  if (!scrollSentinel.value) return;
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0]?.isIntersecting) {
+        loadMore();
+      }
+    },
+    { rootMargin: "200px" },
+  );
+  observer.observe(scrollSentinel.value);
+}
+
+function cleanupObserver() {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+  }
+}
+
+watch(scrollSentinel, (el) => {
+  if (el) {
+    setupObserver();
+  } else {
+    cleanupObserver();
+  }
+});
+
+watch(isMobile, (mobile, wasMobile) => {
+  infiniteScrollSkip.value = 0;
+  if (wasMobile && !mobile) {
+    store.dispatch("listing/fetchListings", buildListingParams());
+  }
+});
+
+onUnmounted(() => {
+  cleanupObserver();
+});
+
 watch(
   () => route.query,
-  (query) => {
-    const params: ListingParams = {
-      take: Number(query.take) || 20,
-      skip: Number(query.skip) || 0,
-    };
-
-    if (query.sort !== undefined) params.sort = Number(query.sort);
-    if (query.sortDirection !== undefined)
-      params.sortDirection = Number(query.sortDirection);
-    if (query.minDate) params.minDate = query.minDate as string;
-    if (query.maxDate) params.maxDate = query.maxDate as string;
-    if (query.minYear) params.minYear = Number(query.minYear);
-    if (query.maxYear) params.maxYear = Number(query.maxYear);
-
-    store.dispatch("listing/fetchListings", params);
+  () => {
+    infiniteScrollSkip.value = 0;
+    store.dispatch("listing/fetchListings", buildListingParams());
   },
   { immediate: true, deep: true },
 );
@@ -123,6 +198,7 @@ watch(
       :sortDirection="sortDirection"
       :pageSize="pageSize"
       :viewMode="viewMode"
+      :isMobile="isMobile"
       @update:sorting="onSortingChange"
       @update:pageSize="onPageSizeChange"
       @update:viewMode="viewMode = $event"
@@ -141,7 +217,7 @@ watch(
     </div>
 
     <template v-else>
-      <div v-if="viewMode === 'card'" class="listing-grid">
+      <div v-if="effectiveViewMode === 'card'" class="listing-grid">
         <ListingCard v-for="car in items" :key="car.id" :car="car" />
       </div>
       <ListingTable
@@ -154,11 +230,24 @@ watch(
     </template>
 
     <ListingPagination
-      v-if="!loading && items.length > 0"
+      v-if="!isMobile && !loading && items.length > 0"
       :currentPage="currentPage"
       :hasMore="hasMore"
       @changePage="onPageChange"
     />
+
+    <div
+      v-if="isMobile && items.length > 0"
+      ref="scrollSentinel"
+      class="infinite-scroll-sentinel"
+    >
+      <div v-if="loadingMore" class="infinite-scroll-loading">
+        Yükleniyor...
+      </div>
+      <div v-else-if="!hasMore" class="infinite-scroll-end">
+        Tüm sonuçlar yüklendi
+      </div>
+    </div>
 
     <ListingFilterModal
       :visible="showFilterModal"
