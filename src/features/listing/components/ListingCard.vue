@@ -14,7 +14,7 @@ const km = computed(() => props.car.properties.find((p) => p.name === 'km')?.val
 </script>
 
 <template>
-  <router-link :to="{ name: 'detail', params: { id: car.id } }" class="listing-card">
+  <router-link :to="{ name: 'detail', query: { id: car.id } }" class="listing-card">
     <img
       :src="photoSrc"
       :alt="car.title"

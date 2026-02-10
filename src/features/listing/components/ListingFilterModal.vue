@@ -70,7 +70,6 @@ function onBackdrop() {
         </div>
 
         <div class="modal__footer">
-          <button class="modal__btn modal__btn--clear" @click="clear">Temizle</button>
           <button class="modal__btn modal__btn--apply" @click="apply">Uygula</button>
         </div>
       </div>

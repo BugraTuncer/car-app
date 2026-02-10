@@ -21,7 +21,7 @@ function getProperty(car: CarListing, name: string): string {
 }
 
 function goToDetail(id: number) {
-  router.push({ name: 'detail', params: { id } })
+  router.push({ name: 'detail', query: { id } })
 }
 
 function onHeaderClick(field: SortField) {

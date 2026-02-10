@@ -37,7 +37,7 @@ function goBack() {
 }
 
 watch(
-  () => route.params.id,
+  () => route.query.id,
   (id) => {
     if (id) {
       store.dispatch('detail/fetchDetail', Number(id))
