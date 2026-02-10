@@ -1,6 +1,6 @@
 # Car App
 
-Vue 3 ve TypeScript ile geliştirilmiş araç ilan listeleme ve detay görüntüleme uygulaması.
+Vue 3 ve TypeScript ile geliştirilmiş araç ilan listeleme ve detay görüntüleme
 
 ## Teknolojiler
 
@@ -46,8 +46,8 @@ npm run format
 
 ## Ortam Değişkenleri
 
-| Değişken | Açıklama |
-|----------|----------|
+| Değişken            | Açıklama     |
+| ------------------- | ------------ |
 | `VITE_API_BASE_URL` | API base URL |
 
 ## Proje Yapısı
@@ -66,8 +66,8 @@ src/
 ## Özellikler
 
 - Araç ilan listeleme (kart ve tablo görünümü)
-- Sıralama desteği
-- Sonsuz kaydırma (infinite scroll)
+- Filtreleme
+- Mobil için Infinite scroll
 - Fotoğraf galerisi ve tam ekran modal
 - Mobil uyumlu tasarım
 - Global hata yönetimi
