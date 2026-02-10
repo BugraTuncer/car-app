@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
 import type { FilterParams } from '../types'
+import CustomDatePicker from './CustomDatePicker.vue'
 
 const props = defineProps<{
   visible: boolean
@@ -65,12 +66,22 @@ function reset() {
 
         <div class="modal__body">
           <div class="modal__field">
-            <label>Min Tarih</label>
-            <input type="date" v-model="form.minDate" :class="{ 'input--error': dateError }" />
+            <CustomDatePicker
+              v-model="form.minDate"
+              label="Min Tarih"
+              placeholder="Başlangıç tarihi"
+              :max-date="form.maxDate"
+              :has-error="!!dateError"
+            />
           </div>
           <div class="modal__field">
-            <label>Max Tarih</label>
-            <input type="date" v-model="form.maxDate" :class="{ 'input--error': dateError }" />
+            <CustomDatePicker
+              v-model="form.maxDate"
+              label="Max Tarih"
+              placeholder="Bitiş tarihi"
+              :min-date="form.minDate"
+              :has-error="!!dateError"
+            />
           </div>
           <p v-if="dateError" class="modal__error-text">{{ dateError }}</p>
 
