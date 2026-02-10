@@ -28,14 +28,6 @@ function apply() {
   emit('apply', filters)
 }
 
-function clear() {
-  form.minDate = ''
-  form.maxDate = ''
-  form.minYear = undefined
-  form.maxYear = undefined
-  emit('apply', {})
-}
-
 function onBackdrop() {
   emit('close')
 }
